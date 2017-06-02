@@ -64,7 +64,11 @@ class DataHandler
                 // Redirect URI must be associated with a protocol
                 $isValidRedirectUri = false;
             }
-            if (!empty($info['query']) || strpos($info['path'], '../') !== false) {
+//            if (!empty($info['query']) || strpos($info['path'], '../') !== false) {
+//                // Can not contain fragments of URLs or relative paths
+//                $isValidRedirectUri = false;
+//            }
+            if (strpos($info['path'], '../') !== false) {
                 // Can not contain fragments of URLs or relative paths
                 $isValidRedirectUri = false;
             }
