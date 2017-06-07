@@ -1,0 +1,35 @@
+plugin.tx_csloauth2 {
+    settings {
+        oAuth2Server {
+            pageUid =
+            pageType = 1496330437
+        }
+
+        controllers {
+            Server {
+                actions {
+                    showLoginForm {
+                        useExternal = 0
+                        useExternal {
+                            enable = 0
+                            link =
+
+                            appendOriginalUrlAsParameter {
+                                enable = 1
+                                parameterName = redirect_url
+                            }
+                        }
+                    }
+                    showAuthorizeClientForm {
+                        # enable to force (verbose) the user to "allow" oauth from the requesting client application using a form
+                        # disable (enable = 0) to automatically "allow" oauth from the requesting client application
+                        enable = 1
+                    }
+                    profile {
+                        allowedFields = uid,username,name,first_name,middle_name,last_name,address,telephone,fax,email,title,zip,city,country
+                    }
+                }
+            }
+        }
+    }
+}

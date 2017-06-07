@@ -1,0 +1,44 @@
+<f:layout name="Default"/>
+
+<f:section name="main">
+
+    <h1>
+        <img src="{f:uri.resource(path:'Icons/typo3.png')}" width="64" alt="">
+        {client.name}
+    </h1>
+
+    <p class="lead">You have been sent here by {client.name}.</p>
+
+    <p>{client.name} would like to access the following data:</p>
+
+    <ul>
+        <li>friends</li>
+        <li>memories</li>
+        <li>hopes, dreams, passions, etc.</li>
+        <li>sock drawer</li>
+    </ul>
+
+    <p>It will use this data to:</p>
+
+    <ul>
+        <li>integrate with friends</li>
+        <li>make your life better</li>
+        <li>miscellaneous nefarious purposes</li>
+    </ul>
+
+    <ul class="list-inline authorize-options">
+        <li>
+            <f:form actionUri="{actionUri}" method="post">
+                <f:form.hidden name="authorize" value="0" />
+                <f:form.submit class="btn btn-default navbar-btn" value="Cancel" />
+            </f:form>
+        </li>
+        <li>
+            <f:form actionUri="{actionUri}" method="post">
+                <f:form.hidden name="authorize" value="1" />
+                <f:form.submit class="btn btn-primary navbar-btn" value="Yes, I authorize this request" />
+            </f:form>
+        </li>
+    </ul>
+
+</f:section>

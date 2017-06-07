@@ -1,0 +1,99 @@
+plugin.tx_csloauth2 {
+    view {
+        layoutRootPaths {
+            0 = EXT:csl_oauth2/Resources/Private/Layouts/
+        }
+        partialRootPaths {
+            0 = EXT:csl_oauth2/Resources/Private/Partials/
+        }
+        templateRootPaths {
+            0 = EXT:csl_oauth2/Resources/Private/Templates/
+        }
+    }
+    settings {
+        oAuth2Server {
+            pageUid = {$plugin.tx_csloauth2.settings.oAuth2Server.pageUid}
+            pageType = {$plugin.tx_csloauth2.settings.oAuth2Server.pageType}
+        }
+
+        controllers {
+            Server {
+                actions {
+                    showLoginForm {
+                        useExternal {
+                            enable = {$plugin.tx_csloauth2.settings.controllers.Server.actions.showLoginForm.useExternal.enable}
+                            link = {$plugin.tx_csloauth2.settings.controllers.Server.actions.showLoginForm.useExternal.link}
+
+                            appendOriginalUrlAsParameter {
+                                enable = {$plugin.tx_csloauth2.settings.controllers.Server.actions.showLoginForm.useExternal.appendOriginalUrlAsParameter.enable}
+                                parameterName = {$plugin.tx_csloauth2.settings.controllers.Server.actions.showLoginForm.useExternal.appendOriginalUrlAsParameter.parameterName}
+                            }
+                        }
+                    }
+                    showAuthorizeClientForm {
+                        # enable to force (verbose) the user to "allow" oauth from the requesting client application using a form
+                        # disable (enable = 0) to automatically "allow" oauth from the requesting client application
+                        enable = {$plugin.tx_csloauth2.settings.controllers.Server.actions.showAuthorizeClientForm.enable}
+                    }
+                    profile {
+                        allowedFields = {$plugin.tx_csloauth2.settings.controllers.Server.actions.profile.allowedFields}
+                    }
+                }
+            }
+        }
+    }
+}
+
+
+###
+### API: General
+###
+cslOauth2Api = PAGE
+cslOauth2Api {
+    typeNum =
+    10 = USER
+    10 {
+        userFunc = TYPO3\CMS\Extbase\Core\Bootstrap->run
+        extensionName = CslOauth2
+        vendorName = Causal
+        pluginName =
+        controller =
+        switchableControllerActions {
+        }
+        settings =< plugin.tx_csloauth2.settings
+        persistence =< plugin.tx_csloauth2.persistence
+        view =< plugin.tx_csloauth2.view
+    }
+
+    config {
+        debug = 0
+        disableAllHeaderCode = 1
+        xhtml_cleaning = 0
+        admPanel = 0
+        no_cache = 1
+    }
+}
+
+###
+### API: Server Endpoint
+###
+cslOauth2ApiServer < cslOauth2Api
+cslOauth2ApiServer {
+    typeNum = {$plugin.tx_csloauth2.settings.oAuth2Server.pageType}
+    10 {
+        pluginName = Server
+        controller = Server
+        action = authorize
+        switchableControllerActions {
+            Server {
+                1 = authorize
+                2 = showAuthorizeClientForm
+                3 = authorizeClient
+                4 = showLoginForm
+                5 = login
+                6 = token
+                7 = profile
+            }
+        }
+    }
+}

@@ -1,0 +1,37 @@
+<f:layout name="Default"/>
+
+<f:section name="main">
+
+    <h1>
+        <img src="{f:uri.resource(path:'Icons/typo3.png')}" width="64" alt="">
+        {siteName}
+    </h1>
+
+    <p class="lead">
+        <f:translate key="login.welcome.1" arguments="{0: clientDetails.name}" /><br />
+        <f:translate key="login.welcome.2" />
+    </p>
+
+    <f:flashMessages renderMode="div" />
+
+    <f:form actionUri="{actionUri}" method="post" class="form-horizontal">
+        <div class="form-group">
+            <label for="username" class="col-sm-2 control-label"><f:translate key="login.username" /></label>
+            <div class="col-sm-10">
+                <f:form.textfield class="form-control" id="username" name="username" placeholder="{f:translate(key:'login.username.placeholder')}" />
+            </div>
+        </div>
+        <div class="form-group">
+            <label for="password" class="col-sm-2 control-label"><f:translate key="login.password" /></label>
+            <div class="col-sm-10">
+                <f:form.password class="form-control" id="password" name="password" additionalAttributes="{placeholder: '{f:translate(key: \'login.password.placeholder\')}'}" />
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="col-sm-offset-2 col-sm-10">
+                <f:form.submit class="btn btn-default" value="{f:translate(key:'login.submit')}" />
+            </div>
+        </div>
+    </f:form>
+
+</f:section>
