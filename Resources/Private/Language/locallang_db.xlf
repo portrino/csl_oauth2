@@ -25,10 +25,10 @@
 				<source>Client Secret</source>
 			</trans-unit>
 			<trans-unit id="tx_csloauth2_oauth_clients.redirect_uri">
-				<source>Authorized Redirect URI</source>
+				<source>Authorized Redirect URIs (one per line)</source>
 			</trans-unit>
 			<trans-unit id="tx_csloauth2_oauth_clients.redirect_uri.description">
-				<source>Use for queries performed from a web server. This is the path of your application to which users are redirected after they authenticate with this TYPO3 website. The access authorization code will be added to the path. It must be associated with a protocol. Can not contain fragments of URLs or relative paths. Can not be a public IP address.</source>
+				<source>Use for queries performed from a web server. This is the path in your application that users are redirected to after they have authenticated with this TYPO3 website. The access authorization code will be appended to the path. Must be associated with a protocol. Cannot contain URL fragments or relative paths. Cannot be a public IP address.</source>
 			</trans-unit>
 
 			<trans-unit id="palette.client_secret">

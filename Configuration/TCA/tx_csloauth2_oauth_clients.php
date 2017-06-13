@@ -21,9 +21,9 @@ return array(
     'types' => array(
         '1' => array(
             'showitem' => '
-                        hidden, name, typo3_context, client_id, map,
-                        --palette--;LLL:EXT:csl_oauth2/Resources/Private/Language/locallang_db.xlf:palette.client_secret;client_secret,
-                        --palette--;LLL:EXT:csl_oauth2/Resources/Private/Language/locallang_db.xlf:palette.restrictions;restrictions'
+                name, typo3_context, client_id, --palette--;;client_secret, --palette--;;restrictions,
+                --div--;LLL:EXT:frontend/Resources/Private/Language/locallang_ttc.xml:tabs.access,hidden
+            '
         ),
     ),
     'palettes' => array(
@@ -103,9 +103,10 @@ return array(
             'exclude' => 0,
             'label' => 'LLL:EXT:csl_oauth2/Resources/Private/Language/locallang_db.xlf:tx_csloauth2_oauth_clients.redirect_uri',
             'config' => array(
-                'type' => 'input',
-                'size' => '30',
-                'eval' => 'trim',
+                'type' => 'text',
+                'cols' => 40,
+                'rows' => 15,
+                'eval' => 'trim,required',
                 'placeholder' => 'https://www.example.com/oauth2callback',
                 'wizards' => array(
                     'specialWizards' => array(

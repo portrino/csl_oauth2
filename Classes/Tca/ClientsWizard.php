@@ -65,7 +65,7 @@ class ClientsWizard
             }
         }
         if (!empty($csh)) {
-            $PA['item'] .= '<div style="white-space:normal;font-size:80%">' . $this->translate($csh) . '</div>';
+            $PA['item'] = '<div style="white-space:normal;font-size:80%;margin-bottom: 1em;">' . $this->translate($csh) . '</div>' .  $PA['item'];
         }
     }
 
@@ -87,8 +87,10 @@ class ClientsWizard
         $onClick .= 'return false;';
 
         $html = [];
-        $html[] = '<button onclick="' . $onClick . '">' . $this->translate('action.reset') . '</button>';
+        $html[] = '<div class="form-control-wrap" style="margin-top: 14px;">';
         $html[] = '<input type="hidden" id="' . $PA['itemFormElID'] . '" name="' . $PA['itemFormElName'] . '" value="" />';
+        $html[] = '<button class="btn btn-danger" onclick="' . $onClick . '">' . $this->translate('action.reset') . '</button>';
+        $html[] = '</div>';
 
         return implode(LF, $html);
     }
@@ -117,7 +119,7 @@ class ClientsWizard
      */
     protected function generateResetClientSecretButton()
     {
-        $button = '<button onclick="javascript:alert(1);return false;">reset</button>';
+        $button = '<button class="btn btn-danger" onclick="javascript:alert(1);return false;">reset</button>';
         return $button;
     }
 
