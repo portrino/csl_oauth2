@@ -375,7 +375,6 @@ class ServerController extends ActionController
     public function profileAction()
     {
         $defaultAllowedFields = [
-            'uid',
             'username',
             'name',
             'first_name',
@@ -399,13 +398,19 @@ class ServerController extends ActionController
         } else {
             $allowedFields = $defaultAllowedFields;
         }
+        $allowedFields = $this->cleanAllowedFields($allowedFields);
+
         $request = Request::createFromGlobals();
+        /** @var Response $response */
         $response = GeneralUtility::makeInstance(Response::class);
 
         // Validate the authorize request. if it is invalid, redirect back to the client with the errors in tow
         if (!$this->oAuth2Server->verifyResourceRequest($request, $response)) {
+            if ($response->getParameter('error') === null) {
+                $response->setError(403, 'invalid_access_token', 'Invalid or no access token given');
+            }
             $response->send();
-            return;
+            exit;
         }
 
         $token = $this->oAuth2Server->getAccessTokenData($request);
@@ -434,7 +439,10 @@ class ServerController extends ActionController
         $user = $this->database->exec_SELECTgetSingleRow($select, $table, 'uid=' . (int)$userUid . $additionalWhere);
 
         $requestParams = $request->getAllQueryParameters();
-        $responseParams = [];
+        $responseParams = [
+            'identifier' => (string)$this->actionSettings['identifierPrefix'] . $user['uid'],
+            'uid' => $user['uid']
+        ];
         $fields = explode(',', $requestParams['fields']);
 
         foreach ($fields as $field) {
@@ -445,5 +453,28 @@ class ServerController extends ActionController
         $response->setParameters($responseParams);
         $response->send();
         exit;
+    }
+
+    /**
+     * @param array $allowedFields
+     *
+     * @return array
+     */
+    private function cleanAllowedFields($allowedFields) {
+        $disallowedFields = [
+            'password',
+            'admin',
+            'uc',
+            'felogin_forgotHash'
+        ];
+        $cleanAllowedFields = array_unique($allowedFields);
+
+        foreach ($disallowedFields as $disallowedField) {
+            $hits = array_keys($cleanAllowedFields, $disallowedField);
+            foreach ($hits as $hit) {
+                unset($cleanAllowedFields[$hit]);
+            }
+        }
+        return $cleanAllowedFields;
     }
 }

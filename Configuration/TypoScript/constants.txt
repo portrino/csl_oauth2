@@ -27,6 +27,7 @@ plugin.tx_csloauth2 {
                     }
                     profile {
                         allowedFields = uid,username,name,first_name,middle_name,last_name,address,telephone,fax,email,title,zip,city,country
+                        identifierPrefix =
                     }
                 }
             }

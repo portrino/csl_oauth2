@@ -37,6 +37,7 @@ plugin.tx_csloauth2 {
                     }
                     profile {
                         allowedFields = {$plugin.tx_csloauth2.settings.controllers.Server.actions.profile.allowedFields}
+                        identifierPrefix = {$plugin.tx_csloauth2.settings.controllers.Server.actions.profile.identifierPrefix}
                     }
                 }
             }
