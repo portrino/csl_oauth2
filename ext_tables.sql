@@ -27,7 +27,7 @@ CREATE TABLE tx_csloauth2_oauth_access_tokens (
     access_token varchar(40) DEFAULT '' NOT NULL,
     client_id varchar(80) DEFAULT '' NOT NULL,
     user_id varchar(255) DEFAULT NULL,
-    expires timestamp DEFAULT 'CURRENT_TIMESTAMP' on update CURRENT_TIMESTAMP NOT NULL,
+    expires timestamp DEFAULT CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP NOT NULL,
     scope varchar(2000) DEFAULT NULL,
 
     PRIMARY KEY (access_token)
@@ -38,7 +38,7 @@ CREATE TABLE tx_csloauth2_oauth_authorization_codes (
     client_id varchar(80) DEFAULT '' NOT NULL,
     user_id varchar(255) DEFAULT NULL,
     redirect_uri varchar(2000) DEFAULT NULL,
-    expires timestamp DEFAULT 'CURRENT_TIMESTAMP' on update CURRENT_TIMESTAMP NOT NULL,
+    expires timestamp DEFAULT CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP NOT NULL,
     scope varchar(2000) DEFAULT NULL,
 
     PRIMARY KEY (authorization_code)
@@ -48,7 +48,7 @@ CREATE TABLE tx_csloauth2_oauth_refresh_tokens (
     refresh_token varchar(40) DEFAULT '' NOT NULL,
     client_id varchar(80) DEFAULT '' NOT NULL,
     user_id varchar(255) DEFAULT NULL,
-    expires timestamp DEFAULT 'CURRENT_TIMESTAMP' on update CURRENT_TIMESTAMP NOT NULL,
+    expires timestamp DEFAULT CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP NOT NULL,
     scope varchar(2000) DEFAULT NULL,
 
     PRIMARY KEY (refresh_token)
