@@ -36,7 +36,23 @@ plugin.tx_csloauth2 {
                         enable = {$plugin.tx_csloauth2.settings.controllers.Server.actions.showAuthorizeClientForm.enable}
                     }
                     profile {
-                        allowedFields = {$plugin.tx_csloauth2.settings.controllers.Server.actions.profile.allowedFields}
+                        allowedFields {
+                            uid = identifier
+                            username = username
+                            name = name
+                            first_name = firstName
+                            middle_name = middleName
+                            last_name = lastName
+                            address = address
+                            telephone = telephone
+                            fax = fax
+                            email = email
+                            title = title
+                            zip = zip
+                            city = city
+                            country = country
+                            company = company
+                        }
                         identifierPrefix = {$plugin.tx_csloauth2.settings.controllers.Server.actions.profile.identifierPrefix}
                     }
                 }

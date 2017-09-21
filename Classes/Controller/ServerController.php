@@ -375,30 +375,29 @@ class ServerController extends ActionController
     public function profileAction()
     {
         $defaultAllowedFields = [
-            'username',
-            'name',
-            'first_name',
-            'middle_name',
-            'last_name',
-            'address',
-            'telephone',
-            'fax',
-            'email',
-            'title',
-            'zip',
-            'city',
-            'country'
+            'username' => 'username',
+            'name' => 'displayName',
+            'first_name' => 'firstName',
+            'middle_name' => 'middleName',
+            'last_name' => 'lastName',
+            'address' => 'address',
+            'telephone' => 'telephone',
+            'fax' => 'fax',
+            'email' => 'email',
+            'title' => 'title',
+            'zip' => 'zip',
+            'city' => 'city',
+            'country' => 'country',
+            'company' => 'company'
         ];
-        if (!empty($this->actionSettings['allowedFields'])) {
-            $allowedFields = (
-                is_array($this->actionSettings['allowedFields']) ?
-                    $this->actionSettings['allowedFields'] :
-                    GeneralUtility::trimExplode(',', $this->actionSettings['allowedFields'], true)
-            );
+        if (is_array($this->actionSettings['allowedFields']) && !empty($this->actionSettings['allowedFields'])) {
+            $allowedFieldsDb = array_keys($this->actionSettings['allowedFields']);
+            $allowedFieldsMapped = $this->actionSettings['allowedFields'];
         } else {
-            $allowedFields = $defaultAllowedFields;
+            $allowedFieldsDb = array_keys($defaultAllowedFields);
+            $allowedFieldsMapped = $defaultAllowedFields;
         }
-        $allowedFields = $this->cleanAllowedFields($allowedFields);
+        $allowedFieldsDb = $this->cleanAllowedFields($allowedFieldsDb);
 
         $request = Request::createFromGlobals();
         /** @var Response $response */
@@ -443,11 +442,11 @@ class ServerController extends ActionController
             'identifier' => (string)$this->actionSettings['identifierPrefix'] . $user['uid'],
             'uid' => $user['uid']
         ];
-        $fields = explode(',', $requestParams['fields']);
+        $requestedFields = explode(',', $requestParams['fields']);
 
-        foreach ($fields as $field) {
-            if (in_array($field, $allowedFields)) {
-                $responseParams[$field] = $user[$field];
+        foreach ($requestedFields as $requestedField) {
+            if (in_array($requestedField, $allowedFieldsDb)) {
+                $responseParams[$allowedFieldsMapped[$requestedField]] = $user[$requestedField];
             }
         }
         $response->setParameters($responseParams);
