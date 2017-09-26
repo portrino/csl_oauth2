@@ -438,10 +438,6 @@ class ServerController extends ActionController
         $user = $this->database->exec_SELECTgetSingleRow($select, $table, 'uid=' . (int)$userUid . $additionalWhere);
 
         $requestParams = $request->getAllQueryParameters();
-        $responseParams = [
-            'identifier' => (string)$this->actionSettings['identifierPrefix'] . $user['uid'],
-            'uid' => $user['uid']
-        ];
         $requestedFields = explode(',', $requestParams['fields']);
 
         foreach ($requestedFields as $requestedField) {
@@ -449,6 +445,14 @@ class ServerController extends ActionController
                 $responseParams[$allowedFieldsMapped[$requestedField]] = $user[$requestedField];
             }
         }
+        $responseParams['identifier'] = (string)$this->actionSettings['identifierPrefix'] . $user['uid'];
+        $responseParams['uid'] = $user['uid'];
+
+        $this->signalSlotDispatcher->dispatch(
+            __CLASS__,
+            __FUNCTION__ . 'AfterResponseParamsMapping',
+            [&$responseParams, &$this]
+        );
         $response->setParameters($responseParams);
         $response->send();
         exit;
