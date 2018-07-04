@@ -52,13 +52,13 @@ class ServerController extends ActionController
      * @var \Causal\CslOauth2\Utility\LoginFrontendUserUtility
      * @inject
      */
-    protected $loginFrontendUserUtility = null;
+    protected $loginFrontendUserUtility;
 
     /**
      * @var \TYPO3\CMS\Extbase\Service\TypoScriptService
      * @inject
      */
-    protected $typoScriptService = null;
+    protected $typoScriptService;
 
     /**
      * @var array
@@ -68,7 +68,7 @@ class ServerController extends ActionController
     /**
      * @var FrontendBackendUserAuthentication
      */
-    protected $backendUser = null;
+    protected $backendUser;
 
     /**
      * @var array
@@ -83,18 +83,21 @@ class ServerController extends ActionController
     /**
      * @var DatabaseConnection
      */
-    protected $database = null;
+    protected $database;
 
     /**
      * @var Server
      */
-    protected $oAuth2Server = null;
+    protected $oAuth2Server;
 
     /**
      * @var TypoScriptFrontendController
      */
-    protected $typoScriptFrontendController = null;
+    protected $typoScriptFrontendController;
 
+    /**
+     *
+     */
     public function initializeAction()
     {
         parent::initializeAction();
@@ -118,6 +121,9 @@ class ServerController extends ActionController
         }
     }
 
+    /**
+     * @param ViewInterface $view
+     */
     public function initializeView(ViewInterface $view)
     {
         parent::initializeView($view);
@@ -130,6 +136,10 @@ class ServerController extends ActionController
         ]);
     }
 
+    /**
+     * @throws \TYPO3\CMS\Extbase\Mvc\Exception\InvalidArgumentNameException
+     * @throws \TYPO3\CMS\Extbase\Mvc\Exception\StopActionException
+     */
     public function authorizeAction()
     {
         $request = Request::createFromGlobals();
@@ -148,7 +158,7 @@ class ServerController extends ActionController
                 if ((bool)$this->backendUser->user['uid']) {
                     $isUserLoggedIn = true;
                     $sessionData = $this->backendUser->getSessionData($this->extensionName);
-                    if ($sessionData['client_id'] == $this->clientDetails['client_id']) {
+                    if ($sessionData['client_id'] === $this->clientDetails['client_id']) {
                         $isClientAuthenticated = true;
                     }
                 }
@@ -157,7 +167,7 @@ class ServerController extends ActionController
                 if ($this->typoScriptFrontendController->loginUser) {
                     $isUserLoggedIn = true;
                     $sessionData = $this->typoScriptFrontendController->fe_user->getKey('user', $this->extensionName);
-                    if ($sessionData['client_id'] == $this->clientDetails['client_id']) {
+                    if ($sessionData['client_id'] === $this->clientDetails['client_id']) {
                         $isClientAuthenticated = true;
                     }
                 }
@@ -186,38 +196,44 @@ class ServerController extends ActionController
         }
     }
 
+    /**
+     *
+     */
     public function showLoginFormAction()
     {
         if ((bool)$this->actionSettings['useExternal']['enable'] === true) {
-            if (is_array($this->actionSettings['useExternal']['link'])) {
-                $linkConf = $this->typoScriptService->convertPlainArrayToTypoScriptArray($this->actionSettings['useExternal']);
+            if (\is_array($this->actionSettings['useExternal']['link'])) {
+                $linkConf =
+                    $this->typoScriptService->convertPlainArrayToTypoScriptArray($this->actionSettings['useExternal']);
                 $link = $this->typoScriptFrontendController->cObj->cObjGetSingle($linkConf['link'], $linkConf['link.']);
             } elseif (is_numeric($this->actionSettings['useExternal']['link'])) {
                 $link = $this->uriBuilder
-                            ->setTargetPageUid((int)$this->actionSettings['useExternal']['link'])
-                            ->setAbsoluteUriScheme(true)
-                            ->setUseCacheHash(false)
-                            ->build();
+                    ->setTargetPageUid((int)$this->actionSettings['useExternal']['link'])
+                    ->setAbsoluteUriScheme(true)
+                    ->setUseCacheHash(false)
+                    ->build();
             } else {
                 $link = $this->actionSettings['useExternal']['link'];
             }
 
             if ((bool)$this->actionSettings['useExternal']['appendOriginalUrlAsParameter']['enable'] === true) {
                 $link .= (strpos($link, '?') !== false ? '&' : '?') .
-                         $this->actionSettings['useExternal']['appendOriginalUrlAsParameter']['parameterName'] . '=' .
-                         rawurlencode(GeneralUtility::getIndpEnv('TYPO3_REQUEST_URL'));
+                    $this->actionSettings['useExternal']['appendOriginalUrlAsParameter']['parameterName'] . '=' .
+                    rawurlencode(GeneralUtility::getIndpEnv('TYPO3_REQUEST_URL'));
             }
             HttpUtility::redirect($link);
         } else {
             $oAuth2Params = GeneralUtility::_GET();
-            unset($oAuth2Params['id']);
-            unset($oAuth2Params['type']);
-            unset($oAuth2Params['tx_csloauth2_server']);
+            unset(
+                $oAuth2Params['id'],
+                $oAuth2Params['type'],
+                $oAuth2Params['tx_csloauth2_server']
+            );
             $oAuth2Params['tx_csloauth2_server']['action'] = 'login';
 
             // need to create action uri in controller because using $oAuthParams (w/o action above) in
-            // <f:form additionalParams="..." results in an action uri without an action although an action was defined using
-            // the action attribute
+            // <f:form additionalParams="..." results in an action uri without an action although an action
+            // was defined using the action attribute
             $actionUri = $this->uriBuilder
                 ->setTargetPageUid((int)$this->settings['oAuth2Server']['pageUid'])
                 ->setTargetPageType((int)$this->settings['oAuth2Server']['pageType'])
@@ -233,12 +249,16 @@ class ServerController extends ActionController
         }
     }
 
+    /**
+     * @throws \TYPO3\CMS\Extbase\Mvc\Exception\NoSuchArgumentException
+     * @throws \TYPO3\CMS\Extbase\Mvc\Exception\StopActionException
+     */
     public function loginAction()
     {
-        if ($this->request->hasArgument('username') && empty($this->request->getArgument('username')) ||
-            $this->request->hasArgument('password') && empty($this->request->getArgument('password'))
-        ) {
-            $this->forward('showLoginForm');
+        if ($this->request->hasArgument('username') || $this->request->hasArgument('password')) {
+            if (empty($this->request->getArgument('username')) || empty($this->request->getArgument('password'))) {
+                $this->forward('showLoginForm');
+            }
         }
 
         switch ($this->clientDetails['typo3_context']) {
@@ -266,9 +286,11 @@ class ServerController extends ActionController
         if (!empty($user)) {
             $hashedPassword = $user['password'];
             $objInstanceSaltedPW = SaltFactory::getSaltingInstance($hashedPassword);
-            if (is_object($objInstanceSaltedPW)) {
-                $validPasswd = $objInstanceSaltedPW->checkPassword($this->request->getArgument('password'),
-                    $hashedPassword);
+            if (\is_object($objInstanceSaltedPW)) {
+                $validPasswd = $objInstanceSaltedPW->checkPassword(
+                    $this->request->getArgument('password'),
+                    $hashedPassword
+                );
                 if ($validPasswd) {
                     switch ($this->clientDetails['typo3_context']) {
                         case 'BE':
@@ -296,17 +318,22 @@ class ServerController extends ActionController
         }
     }
 
+    /**
+     * @return void
+     */
     public function showAuthorizeClientFormAction()
     {
         $oAuth2Params = GeneralUtility::_GET();
-        unset($oAuth2Params['id']);
-        unset($oAuth2Params['type']);
-        unset($oAuth2Params['tx_csloauth2_server']);
+        unset(
+            $oAuth2Params['id'],
+            $oAuth2Params['type'],
+            $oAuth2Params['tx_csloauth2_server']
+        );
         $oAuth2Params['tx_csloauth2_server']['action'] = 'authorizeClient';
 
         // need to create action uri in controller because using $oAuthParams (w/o action above) in
-        // <f:form additionalParams="..." results in an action uri without an action although an action was defined using
-        // the action attribute
+        // <f:form additionalParams="..." results in an action uri without an action although an action
+        // was defined using the action attribute
         $actionUri = $this->uriBuilder
             ->setTargetPageUid((int)$this->settings['oAuth2Server']['pageUid'])
             ->setTargetPageType((int)$this->settings['oAuth2Server']['pageType'])
@@ -321,12 +348,16 @@ class ServerController extends ActionController
         ]);
     }
 
+    /**
+     * @throws \TYPO3\CMS\Extbase\Mvc\Exception\NoSuchArgumentException
+     */
     public function authorizeClientAction()
     {
         if ($this->request->hasArgument('authorize') && (bool)$this->request->getArgument('authorize') === true) {
             $isAuthorized = (bool)$this->request->getArgument('authorize');
-            $request = \OAuth2\Request::createFromGlobals();
-            $response = new \OAuth2\Response();
+            $request = Request::createFromGlobals();
+            /** @var Response $response */
+            $response = GeneralUtility::makeInstance(Response::class);
 
             switch ($this->clientDetails['typo3_context']) {
                 case 'BE':
@@ -362,16 +393,24 @@ class ServerController extends ActionController
             );
             HttpUtility::redirect($redirectUri);
         }
-
     }
 
+    /**
+     * @return void
+     */
     public function tokenAction()
     {
         $request = Request::createFromGlobals();
-        $this->oAuth2Server->handleTokenRequest($request)->send();
+        /** @var Response $response */
+        $response = $this->oAuth2Server->handleTokenRequest($request);
+        $response->send();
         exit;
     }
 
+    /**
+     * @throws \TYPO3\CMS\Extbase\SignalSlot\Exception\InvalidSlotException
+     * @throws \TYPO3\CMS\Extbase\SignalSlot\Exception\InvalidSlotReturnException
+     */
     public function profileAction()
     {
         $defaultAllowedFields = [
@@ -390,7 +429,7 @@ class ServerController extends ActionController
             'country' => 'country',
             'company' => 'company'
         ];
-        if (is_array($this->actionSettings['allowedFields']) && !empty($this->actionSettings['allowedFields'])) {
+        if (\is_array($this->actionSettings['allowedFields']) && !empty($this->actionSettings['allowedFields'])) {
             $allowedFieldsDb = array_keys($this->actionSettings['allowedFields']);
             $allowedFieldsMapped = $this->actionSettings['allowedFields'];
         } else {
@@ -415,6 +454,7 @@ class ServerController extends ActionController
         $token = $this->oAuth2Server->getAccessTokenData($request);
         $userUid = $token['user_id'];
         $clientId = $token['client_id'];
+        /** @var Typo3Pdo $clientStorage */
         $clientStorage = $this->oAuth2Server->getStorage('client');
         $this->clientDetails = $clientStorage->getClientDetails($clientId);
 
@@ -438,10 +478,10 @@ class ServerController extends ActionController
         $user = $this->database->exec_SELECTgetSingleRow($select, $table, 'uid=' . (int)$userUid . $additionalWhere);
 
         $requestParams = $request->getAllQueryParameters();
-        $requestedFields = explode(',', $requestParams['fields']);
+        $requestedFields = GeneralUtility::trimExplode(',', $requestParams['fields'], true);
 
         foreach ($requestedFields as $requestedField) {
-            if (in_array($requestedField, $allowedFieldsDb)) {
+            if (\in_array($requestedField, $allowedFieldsDb, true)) {
                 $responseParams[$allowedFieldsMapped[$requestedField]] = $user[$requestedField];
             }
         }
@@ -463,7 +503,8 @@ class ServerController extends ActionController
      *
      * @return array
      */
-    private function cleanAllowedFields($allowedFields) {
+    private function cleanAllowedFields($allowedFields)
+    {
         $disallowedFields = [
             'password',
             'admin',

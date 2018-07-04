@@ -1,7 +1,11 @@
 <?php
-return array(
-    'ctrl' => array(
-        'title' => 'LLL:EXT:csl_oauth2/Resources/Private/Language/locallang_db.xlf:tx_csloauth2_oauth_clients',
+defined('TYPO3_MODE') || die();
+
+$locallangPrefix = 'LLL:EXT:csl_oauth2/Resources/Private/Language/locallang_db.xlf:';
+
+return [
+    'ctrl' => [
+        'title' => $locallangPrefix . 'tx_csloauth2_oauth_clients',
         'label' => 'name',
         'default_sortby' => 'name',
         'adminOnly' => 1,
@@ -10,111 +14,112 @@ return array(
         'tstamp' => 'tstamp',
         'crdate' => 'crdate',
         'cruser_id' => 'cruser_id',
-        'enablecolumns' => array(
+        'enablecolumns' => [
             'disabled' => 'hidden',
-        ),
+        ],
         'iconfile' => 'EXT:csl_oauth2/Resources/Public/Icons/tx_csloauth2_oauth_clients.png',
-    ),
-    'interface' => array(
-        'showRecordFieldList' => 'hidden, name, typo3_context, client_id, client_secret, reset_client_secret, redirect_uri',
-    ),
-    'types' => array(
-        '1' => array(
+    ],
+    'interface' => [
+        'showRecordFieldList' => 'hidden,name,typo3_context,client_id,client_secret,reset_client_secret,redirect_uri',
+    ],
+    'types' => [
+        '1' => [
             'showitem' => '
                 name, typo3_context, client_id, --palette--;;client_secret, --palette--;;restrictions,
-                --div--;LLL:EXT:frontend/Resources/Private/Language/locallang_ttc.xml:tabs.access,hidden
+                --div--;LLL:EXT:frontend/Resources/Private/Language/locallang_ttc.xml:tabs.access,
+                    hidden
             '
-        ),
-    ),
-    'palettes' => array(
-        'client_secret' => array(
+        ],
+    ],
+    'palettes' => [
+        'client_secret' => [
             'showitem' => 'client_secret, reset_client_secret',
             'canNotCollapse' => 1,
-        ),
-        'restrictions' => array(
+        ],
+        'restrictions' => [
             'showitem' => 'redirect_uri',
             'canNotCollapse' => 1,
-        ),
-    ),
-    'columns' => array(
-        'hidden' => array(
+        ],
+    ],
+    'columns' => [
+        'hidden' => [
             'exclude' => 1,
             'label' => 'LLL:EXT:lang/locallang_general.xlf:LGL.hidden',
-            'config' => array(
+            'config' => [
                 'type' => 'check',
                 'default' => '0'
-            )
-        ),
-        'name' => array(
+            ]
+        ],
+        'name' => [
             'exclude' => 0,
-            'label' => 'LLL:EXT:csl_oauth2/Resources/Private/Language/locallang_db.xlf:tx_csloauth2_oauth_clients.name',
-            'config' => array(
+            'label' => $locallangPrefix . 'tx_csloauth2_oauth_clients.name',
+            'config' => [
                 'type' => 'input',
                 'size' => '30',
                 'eval' => 'required,trim',
-            )
-        ),
-        'typo3_context' => array(
+            ]
+        ],
+        'typo3_context' => [
             'exclude' => 0,
-            'label' => 'LLL:EXT:csl_oauth2/Resources/Private/Language/locallang_db.xlf:tx_csloauth2_oauth_clients.typo3_context',
-            'config' => array(
+            'label' => $locallangPrefix . 'tx_csloauth2_oauth_clients.typo3_context',
+            'config' => [
                 'type' => 'select',
-                'items' => array(
-                    array(
-                        'LLL:EXT:csl_oauth2/Resources/Private/Language/locallang_db.xlf:tx_csloauth2_oauth_clients.typo3_context.BE',
+                'items' => [
+                    [
+                        $locallangPrefix . 'tx_csloauth2_oauth_clients.typo3_context.BE',
                         'BE'
-                    ),
-                    array(
-                        'LLL:EXT:csl_oauth2/Resources/Private/Language/locallang_db.xlf:tx_csloauth2_oauth_clients.typo3_context.FE',
+                    ],
+                    [
+                        $locallangPrefix . 'tx_csloauth2_oauth_clients.typo3_context.FE',
                         'FE'
-                    ),
-                ),
+                    ],
+                ],
                 'size' => 1,
                 'maxitems' => 1,
-            )
-        ),
-        'client_id' => array(
+            ]
+        ],
+        'client_id' => [
             'exclude' => 0,
-            'label' => 'LLL:EXT:csl_oauth2/Resources/Private/Language/locallang_db.xlf:tx_csloauth2_oauth_clients.client_id',
-            'config' => array(
+            'label' => $locallangPrefix . 'tx_csloauth2_oauth_clients.client_id',
+            'config' => [
                 'type' => 'input',
                 'size' => '40',
                 'readOnly' => true,
-            )
-        ),
-        'client_secret' => array(
+            ]
+        ],
+        'client_secret' => [
             'exclude' => 0,
-            'label' => 'LLL:EXT:csl_oauth2/Resources/Private/Language/locallang_db.xlf:tx_csloauth2_oauth_clients.client_secret',
-            'config' => array(
+            'label' => $locallangPrefix . 'tx_csloauth2_oauth_clients.client_secret',
+            'config' => [
                 'type' => 'input',
                 'size' => '40',
                 'readOnly' => true,
-            )
-        ),
-        'reset_client_secret' => array(
+            ]
+        ],
+        'reset_client_secret' => [
             'exclude' => 1,
             'label' => '',
-            'config' => array(
+            'config' => [
                 'type' => 'user',
                 'userFunc' => \Causal\CslOauth2\Tca\ClientsWizard::class . '->resetClientSecret',
-            ),
-        ),
-        'redirect_uri' => array(
+            ],
+        ],
+        'redirect_uri' => [
             'exclude' => 0,
-            'label' => 'LLL:EXT:csl_oauth2/Resources/Private/Language/locallang_db.xlf:tx_csloauth2_oauth_clients.redirect_uri',
-            'config' => array(
+            'label' => $locallangPrefix . 'tx_csloauth2_oauth_clients.redirect_uri',
+            'config' => [
                 'type' => 'text',
                 'cols' => 40,
                 'rows' => 15,
                 'eval' => 'trim,required',
                 'placeholder' => 'https://www.example.com/oauth2callback',
-                'wizards' => array(
-                    'specialWizards' => array(
+                'wizards' => [
+                    'specialWizards' => [
                         'type' => 'userFunc',
                         'userFunc' => \Causal\CslOauth2\Tca\ClientsWizard::class . '->enhance',
-                    ),
-                ),
-            ),
-        ),
-    ),
-);
+                    ],
+                ],
+            ],
+        ],
+    ],
+];
